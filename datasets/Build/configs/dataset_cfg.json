@@ -1,0 +1,71 @@
+{
+  "output_dir": "./outputs",
+  "generators_cfg_path": "configs/generators.json",
+
+  "input_csvs": {
+    "CCAT50": {
+      "all": "./data/CCAT50.csv"
+    },
+    "C4NEWS": {
+      "train_glob": "c4-train.*-of-00512.json.gz",
+      "validation": "c4-validation.00000-of-00001.json.gz",
+      "sample_sizes": {
+        "train": 50000,
+        "dev": 5000,
+        "test": 5000
+      },
+      "char_len": {
+        "min": 1000,
+        "max": 5000
+      }
+    }
+  },
+
+  "cleaning": {
+    "min_tokens": 30
+  },
+
+  "ccat50_dev_from_test": {
+    "seed": 20250218,
+    "ratio": 0.5
+  },
+
+  "sampling": {
+    "seed": 123,
+
+    "n_style_refs": {
+      "train": 1600,
+      "dev": 200,
+      "test": 200
+    },
+    "m_groups_per_s": 1,
+    "k_mismatch_s": 3,
+
+    "allow_anchor_same_as_style": false,
+
+    "prompt_family_by_type": {
+      "POS": "imitate",
+      "NEG-neutral": "neutral",
+      "NEG-wrong_ref_s": "imitate"
+    },
+
+    "prompt_truncate_chars": 6000,
+    "generators": ["gpt"]
+  },
+
+  "generation": {
+    "use_mock": false,
+    "max_workers": 3,
+    "seed": 123,
+    "per_sample_retries": 2,
+    "prompt_truncate_chars": 6000
+  },
+
+  "qc": {
+    "qc_cfg_path": "configs/qc_cfg.json"
+  },
+
+  "filter": {
+    "gzip_outputs": false
+  }
+}

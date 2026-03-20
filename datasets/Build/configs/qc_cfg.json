@@ -1,0 +1,5 @@
+{
+  "min_query_tokens": 50,
+  "max_query_tokens": 2000,
+  "disallow_markdown": true
+}

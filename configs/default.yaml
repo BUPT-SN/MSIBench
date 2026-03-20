@@ -1,0 +1,118 @@
+project:
+  name: "MSIBench"
+  output_dir: "outputs"
+  seed: 22
+  run_name: "c4"
+  resume_from: null
+
+data:
+  data_root: "datasets"
+  dataset: "C4NEWS"
+
+  samples_csv: "samples_use.cleaned.csv"
+  texts_csv: "texts_dedup.cleaned.csv"
+
+  style_uid_col: "style_ref_text_uid"
+  query_uid_col: "query_text_uid"
+  wrong_style_uid_col: ""
+
+  neg_type_col: "neg_type"
+  label_col: "label"
+  split_col: "split"
+
+  train_split: "train"
+  dev_split: "dev"
+  test_split: "test"
+
+  train_exclude_neg_types: []
+  test_exclude_neg_types: []
+
+  grouping:
+    group_id_col: "group_id"
+    mismatch_flag_col: "is_mismatch_s"
+
+    n_neg: 3
+    n_mismatch: 3
+
+    pos_neg_types: ["NEG-Anchor", "NEG-neutral", "NEG-wrong_ref_s"]
+
+    sampling: "truncate"
+
+
+model:
+  method: "bi_encoder"
+
+  configs:
+    cross_encoder:
+      train_mode: "group"
+      pretrained_name: "microsoft/deberta-v3-base"
+      max_length: 256
+
+      cls_weight: 1.0
+      rank_weight: 1.0
+      mismatch_rank_weight: 1.0
+
+    bi_encoder:
+      train_mode: "pair"
+      pretrained_name: "microsoft/deberta-v3-base"
+      max_length: 256
+      pooling: "mean"
+      proj_dim: 0
+      temperature: 0.3
+      learnable_temperature: false
+      normalize: true
+      dropout: 0.1
+      cls_weight: 1.0
+      rank_weight: 1.0
+      mismatch_rank_weight: 1.0
+
+      # -------------------------
+      # Manual feature branch
+      # -------------------------
+      use_manual_features: False
+      manual_feature_subdir: "style"
+      feat_in_dim: 0
+      feat_out_dim: 128
+      feat_layernorm: True
+      adapter_hidden: 256
+      gate_hidden: 256
+      gate_dropout: 0.1
+      gate_bias_init: -3.0
+      feat_dropout: 0.2
+      detach_base_for_manual: True
+
+      # -------------------------
+      # In-batch InfoNCE
+      # -------------------------
+      use_inbatch_nce: False
+      nce_weight: 0.2
+      nce_symmetric: True
+
+train:
+  epochs: 100
+  train_batch_size: 4
+  eval_batch_size: 16
+  grad_accum: 1
+  lr: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  max_grad_norm: 1.0
+  fp16: true
+
+  metric_for_best_model: "f1"
+  greater_is_better: true
+  early_stopping_patience: 5
+
+  logging_steps: 20
+  eval_strategy: "epoch"
+  save_strategy: "epoch"
+  save_total_limit: 2
+
+  listwise_temperature: 1.0
+
+  auto_test_best: true
+
+wandb:
+  enabled: true
+  project: ""
+  entity: ""
