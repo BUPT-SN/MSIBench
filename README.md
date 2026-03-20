@@ -23,22 +23,45 @@ MSIBench is a benchmark for Machine Style Imitation Verification (MSIV), a task 
 * **Dataset pipeline**
 
   * Cleaning → Sampling → Generation → QC → Filtering
+
+---
+
+## Project Structure
+
+```
+MSIBench/
+├── configs/          # training configs
+├── datasets/         # data + build pipeline
+├── models/           # model definitions
+├── scripts/          # entry point
+├── src/              # training / evaluation logic
+├── utils/            # utilities
+```
+
 ---
 
 ## Installation
+We recommend using uv for fast and reproducible environments.
+
+
 
 ```bash
 git clone <your-repo-url>
 cd MSIBench
-
-pip install -r requirements.txt
+pip install uv
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
 ```
 
 For dataset building:
 
 ```bash
 cd datasets/Build
-pip install -r requirements.txt
+pip install uv
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
 ```
 
 ---
@@ -114,20 +137,6 @@ Key options:
 
 ---
 
-## Project Structure
-
-```
-MSIBench/
-├── configs/          # training configs
-├── datasets/         # data + build pipeline
-├── models/           # model definitions
-├── scripts/          # entry point
-├── src/              # training / evaluation logic
-├── utils/            # utilities
-```
-
----
-
 ## Notes
 
 * LLM generation requires API configuration:
@@ -142,8 +151,3 @@ export OPENAI_API_KEY=your_key
 datasets/Build/configs/generators.json
 ```
 
----
-
-## License
-
-MIT License
